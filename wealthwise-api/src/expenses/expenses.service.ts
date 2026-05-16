@@ -9,6 +9,8 @@ import { Expense } from './expense.entity';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { User } from '../users/user.entity';
 import { Category } from '../categories/category.entity';
+import { Budget } from '../budgets/budget.entity';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class ExpensesService {
@@ -17,6 +19,9 @@ export class ExpensesService {
     private expenseRepo: Repository<Expense>,
     @InjectRepository(Category)
     private categoryRepo: Repository<Category>,
+    @InjectRepository(Budget)
+    private budgetRepo: Repository<Budget>,
+    private mailerService: MailerService,
   ) {}
 
   private sanitize(expense: Expense) {
@@ -25,7 +30,7 @@ export class ExpensesService {
     return expense;
   }
 
-  async create(dto: CreateExpenseDto, user: User): Promise<Expense> {
+  async create(dto: CreateExpenseDto, user: User): Promise<any> {
     const category = await this.categoryRepo.findOne({
       where: { id: dto.categoryId },
     });
@@ -38,7 +43,32 @@ export class ExpensesService {
       category,
     });
     const saved = await this.expenseRepo.save(expense);
-    return this.sanitize(saved);
+
+    // Check budget and send alert if exceeded
+    const budget = await this.budgetRepo.findOne({
+      where: { user: { id: user.id }, category: { id: dto.categoryId } },
+    });
+
+    if (budget) {
+      const allExpenses = await this.expenseRepo.find({
+        where: { user: { id: user.id }, category: { id: dto.categoryId } },
+      });
+      const totalSpent = allExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+
+      if (totalSpent > Number(budget.limitAmount)) {
+        this.mailerService.sendBudgetAlert(
+          { name: user.name, email: user.email },
+          category.name,
+          Number(budget.limitAmount),
+          totalSpent,
+        );
+      }
+    }
+
+    return {
+      ...this.sanitize(saved),
+      message: 'Expense added successfully',
+    };
   }
 
   async findMyExpenses(user: User) {
