@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromHeader('authorization'),
       secretOrKey: config.get('JWT_SECRET') ?? 'fallback_secret',
     });
   }

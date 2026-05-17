@@ -12,8 +12,11 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
+
+  @Column({ default: false })
+  isPersonal: boolean;
 
   @ManyToOne(() => User, { eager: true, onDelete: 'SET NULL', nullable: true })
   createdBy: User;

@@ -14,19 +14,24 @@ import { Roles } from '../auth/roles.decorator';
 import { UserRole } from '../users/user.entity';
 
 @Controller('categories')
+@UseGuards(JwtAuthGuard)
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Post()
-  create(@Body() dto: CreateCategoryDto, @Req() req) {
-    return this.categoriesService.create(dto, req.user);
+  @Post('global')
+  createGlobal(@Body() dto: CreateCategoryDto, @Req() req) {
+    return this.categoriesService.createGlobal(dto, req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Post('personal')
+  createPersonal(@Body() dto: CreateCategoryDto, @Req() req) {
+    return this.categoriesService.createPersonal(dto, req.user);
+  }
+
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@Req() req) {
+    return this.categoriesService.findAllForUser(req.user);
   }
 }
