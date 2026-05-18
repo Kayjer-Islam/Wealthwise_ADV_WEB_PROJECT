@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -10,60 +12,80 @@ body {
   font-family: "Inter", sans-serif;
   background-color: #f9fafb;
   color: #111827;
+  -webkit-font-smoothing: antialiased;
 }
 
-.page-container {
-  min-height: 100vh;
-  padding: 2rem;
+/* Smooth page transitions */
+.page-enter {
+  animation: fadeUp 0.4s ease forwards;
 }
 
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.btn-primary {
-  background-color: #111827;
-  color: white;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s;
+/* Card hover */
+.hover-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-.btn-primary:hover {
-  background-color: #1f2937;
-}
-
-.btn-danger {
-  background-color: #ef4444;
-  color: white;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s;
-}
-
-.btn-danger:hover {
-  background-color: #dc2626;
-}
-
-.input-field {
-  width: 100%;
-  padding: 0.6rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 0.95rem;
+/* Input focus glow */
+.input-glow:focus {
   outline: none;
-  transition: border 0.2s;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
 }
 
-.input-field:focus {
-  border-color: #111827;
+/* Shimmer loading */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Button press */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Fade in */
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slide in from right */
+.slide-in {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
