@@ -5,14 +5,12 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 1. Enable CORS so your frontend can communicate with the backend
   app.enableCors({
-    origin: 'http://localhost:3001', // Replace with your frontend URL if different
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // 2. Keep your existing ValidationPipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
